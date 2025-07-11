@@ -146,15 +146,18 @@ async def user_message(message: Message, state: FSMContext, bot: Bot):
             if mutual:
                 to_user_data = get_user_from_db(to_user_id)     
                 if to_user_data:
+                    print(from_user_data[0])
+                    print(to_user_id)
+                    print(to_user_data)
                     await bot.send_message(
                         from_user_id,
-                        f"💞 Взаимная симпатия! Вы понравились {to_user_data[0]}!\n"
-                        f"Написать: [перейти в личку](tg://user?id={to_user_id})", parse_mode="Markdown"
+                        f"💞 Взаимная симпатия! Вы понравились {to_user_data[1]}!\n"
+                        f"Написать: [перейти в личку](tg://user?id={to_user_data[0]})", parse_mode="Markdown"
                     )
                     await bot.send_message(
                         to_user_id,
                         f"💞 Взаимная симпатия! Вы понравились {from_user_data[1]}!\n"
-                        f"Написать: [перейти в личку](tg://user?id={from_user_data[1]})", parse_mode="Markdown"
+                        f"Написать: [перейти в личку](tg://user?id={from_user_data[0]})", parse_mode="Markdown"
                     )
 
     except Exception as e:
