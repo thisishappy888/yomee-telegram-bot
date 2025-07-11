@@ -146,9 +146,6 @@ async def user_message(message: Message, state: FSMContext, bot: Bot):
             if mutual:
                 to_user_data = get_user_from_db(to_user_id)     
                 if to_user_data:
-                    print(from_user_data[0])
-                    print(to_user_id)
-                    print(to_user_data)
                     await bot.send_message(
                         from_user_id,
                         f"💞 Взаимная симпатия! Вы понравились {to_user_data[1]}!\n"
@@ -161,7 +158,7 @@ async def user_message(message: Message, state: FSMContext, bot: Bot):
                     )
 
     except Exception as e:
-        print(f"Ошибка: {e}")
+        logger.error(f"Ошибка: {e}")
     finally:
         await state.clear()
 
@@ -199,4 +196,4 @@ async def like(callback: CallbackQuery, bot: Bot):
         await callback.answer("✅ Лайк отправлен!", show_alert=False)
 
     except Exception as e:
-        print(f"Ошибка: {e}")
+        logger.error(f"Ошибка: {e}")
