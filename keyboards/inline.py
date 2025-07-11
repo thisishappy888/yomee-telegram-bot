@@ -10,7 +10,7 @@ def get_rating_kb(user_id: int) -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(text="Пожаловаться", callback_data="report"),
-                InlineKeyboardButton(text="Анонимное сообщение", callback_data="anonymous_message"),
+                InlineKeyboardButton(text="Анонимное сообщение", callback_data=f"anonymous_message:{user_id}"),
             ]
         ]
     )

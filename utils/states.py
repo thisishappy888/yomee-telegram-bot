@@ -7,3 +7,6 @@ class Form(StatesGroup):
     geo = State()
     about = State()
     photo = State()
+
+class UserStates(StatesGroup):
+    waiting_for_message = State()  # Состояние ожидания сообщения

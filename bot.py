@@ -35,6 +35,12 @@ if not os.path.exists('data/database.db'):
                           geo TEXT,
                           about TEXT,
                           photo TEXT)""")
+            
+            cursor.execute("""CREATE TABLE IF NOT EXISTS likes (
+                            from_user_id INTEGER,
+                            to_user_id INTEGER,
+                            PRIMARY KEY (from_user_id, to_user_id)
+                            )""")
     except Exception as e:
         logger.error("Не удалось выполнить запрос к базе данных", exc_info=True)
 
