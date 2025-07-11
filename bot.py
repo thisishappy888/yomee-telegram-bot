@@ -1,54 +1,61 @@
+import os
 import asyncio
 import logging
-from aiogram import Bot, Dispatcher, F
-from aiogram.types import CallbackQuery
+import sqlite3
+
+from aiogram import Bot, Dispatcher
+from config_reader import config
 
 from handlers import bot_messages, user_commands, question
 from callbacks import callbacks
 
-from keyboards import inline
 
-import sqlite3
-import os
-
-from config_reader import config
-
+# Настройка логирования
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(levelname)s - %(message)s",
                     handlers=[
                         logging.FileHandler("bot.log", encoding='utf-8'),
                         logging.StreamHandler()
                     ])
-
 logger = logging.getLogger(__name__)
 
-if not os.path.exists('data/database.db'):
-    try:
-        with sqlite3.connect('data/database.db') as db:
-            cursor = db.cursor()
 
-            cursor.execute("""CREATE TABLE users(
-                          id INTEGER PRIMARY KEY,
-                          name TEXT,
-                          age INTEGER,
-                          gender TEXT,
-                          geo TEXT,
-                          about TEXT,
-                          photo TEXT)""")
+
+def init_database():
+    if not os.path.exists('data/database.db'):
+        try:
+            with sqlite3.connect('data/database.db') as db:
+                cursor = db.cursor()
+
+                cursor.execute("""
+                    CREATE TABLE users(
+                    id INTEGER PRIMARY KEY,
+                    name TEXT,
+                    age INTEGER,
+                    gender TEXT,
+                    geo TEXT,
+                    about TEXT,
+                    photo TEXT)
+                """)
             
-            cursor.execute("""CREATE TABLE IF NOT EXISTS likes (
-                            from_user_id INTEGER,
-                            to_user_id INTEGER,
-                            PRIMARY KEY (from_user_id, to_user_id)
-                            )""")
-    except Exception as e:
-        logger.error("Не удалось выполнить запрос к базе данных", exc_info=True)
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS likes (
+                        from_user_id INTEGER,
+                        to_user_id INTEGER,
+                        PRIMARY KEY (from_user_id, to_user_id)
+                    )
+                """)
+                logger.info("База данных успешно инициализирована")
+        except Exception as e:
+            logger.error("Ошибка при инициализации базы данных", exc_info=True)
+
+
 
 async def main():
     bot = Bot(token=config.bot_token.get_secret_value())
     dp = Dispatcher()
     
-    logging.info('Бот запущен')
+    logger.info("Бот запущен")
 
     dp.include_routers(
         user_commands.router,
@@ -63,4 +70,5 @@ async def main():
 
 
 if __name__ == "__main__":
+    init_database()
     asyncio.run(main())
