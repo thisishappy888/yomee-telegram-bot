@@ -44,7 +44,5 @@ async def look_question(message: Message, state: FSMContext):
 
 @router.message(F.text.lower() == "моя анкета")
 async def my_profile(message: Message):
-    await message.answer("⚙️ - Изменить анкету\n",
-                      "😎 - Изменить описание\n",
-                      "📷 - Изменить фото / видео\n", reply_markup=reply.change_form_kb
+    await message.answer("⚙️ - Изменить анкету\n😎 - Изменить описание\n📷 - Изменить фото / видео", reply_markup=reply.change_form_kb
                       )
