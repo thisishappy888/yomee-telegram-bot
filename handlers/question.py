@@ -29,7 +29,7 @@ async def form_age(message: Message, state: FSMContext):
     if message.text.isdigit():
         await state.update_data(age = message.text)
         await state.set_state(Form.gender)
-        await message.answer('Укажите ваш пол (парень/девушка)')
+        await message.answer('Укажите ваш пол (парень/девушка)', reply_markup=reply.gender_kb)
     else:
         await message.answer('Пожалуйста, введите число!')
 

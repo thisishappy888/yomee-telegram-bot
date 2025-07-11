@@ -21,6 +21,16 @@ change_form_kb = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
+gender_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text="парень"),
+            KeyboardButton(text="девушка"),
+        ]
+    ],
+    resize_keyboard=True
+)
+
 geo_kb = ReplyKeyboardMarkup(
     keyboard=[[KeyboardButton(text="📍 Отправить геолокацию", request_location=True)]],
     resize_keyboard=True
