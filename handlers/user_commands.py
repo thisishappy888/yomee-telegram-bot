@@ -43,4 +43,5 @@ async def start(message: Message, state: FSMContext):
         await message.answer_photo(photo=question[6], caption=f"{question[1]}, {question[2]}, {question[4]} - {question[5]}", reply_markup=reply.main_kb)
     else:
         await state.set_state(Form.name)
-        await message.answer('👋 Привет! Давай создадим анкету.\nВведи свое имя')
+        await message.answer_sticker(sticker="CAACAgIAAxkBAAEQk6RocTuu4bjUEmWRLwn0NtFE4zbqnAACwjYAArGLYUgUKsMUgjbO6DYE")
+        await message.answer('Давай создадим анкету.\nВведи свое имя')
