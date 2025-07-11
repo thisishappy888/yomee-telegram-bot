@@ -1,5 +1,6 @@
 import logging
 import sqlite3
+
 from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 from aiogram.types import Message
@@ -10,7 +11,6 @@ from utils.states import UserStates
 
 
 router = Router()
-
 logger = logging.getLogger(__name__)
 
 
@@ -37,7 +37,8 @@ def save_like(cursor, from_user_id: int, to_user_id: int):
     """сохраняет лайки"""
     cursor.execute(
         "INSERT OR IGNORE INTO likes (from_user_id, to_user_id) VALUES (?, ?)", 
-        (from_user_id, to_user_id))
+        (from_user_id, to_user_id)
+    )
 
 
 

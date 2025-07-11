@@ -1,5 +1,7 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
+
+# Главное меню
 main_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
@@ -10,6 +12,8 @@ main_kb = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
+
+# Редактирование анкеты
 change_form_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
@@ -21,6 +25,8 @@ change_form_kb = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
+
+# Выбор пола
 gender_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
@@ -31,6 +37,8 @@ gender_kb = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
+
+# Кнопка с геолокацией
 geo_kb = ReplyKeyboardMarkup(
     keyboard=[[KeyboardButton(text="📍 Отправить геолокацию", request_location=True)]],
     resize_keyboard=True
