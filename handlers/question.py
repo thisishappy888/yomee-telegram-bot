@@ -6,7 +6,7 @@ from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
-from utils.states import Form
+from utils.states import Form, ChangeForm
 from keyboards import reply
 
 
@@ -138,3 +138,67 @@ async def form_photo(message: Message, state: FSMContext):
         caption=f"{data['name']}, {data['age']}, {data['geo']} - {data['about']}", 
         reply_markup=reply.main_kb
     )
+
+
+
+@router.message(ChangeForm.photo, F.photo)
+async def change_form_photo(message: Message, state: FSMContext):
+    try:
+        photo_file_id = message.photo[-1].file_id
+    except (IndexError, AttributeError):
+        await message.answer("❌ Пожалуйста, отправьте фотографию.")
+
+
+    data = await state.get_data()
+    await state.clear()
+
+    with sqlite3.connect("data/database.db") as db:
+        cursor = db.cursor()
+
+        cursor.execute("""
+            UPDATE users SET photo = ?
+            WHERE id = ?
+        """,(photo_file_id, message.from_user.id),)
+
+        cursor.execute("SELECT * FROM users WHERE id = ?", (message.from_user.id,))
+        profile = cursor.fetchone()
+
+        
+    if profile:
+        await message.answer("Так выглядит твоя анкета:")
+        await message.answer_photo(
+            photo=photo_file_id, 
+            caption=f"{profile[1]}, {profile[2]}, {profile[4]} - {profile[5]}", 
+            reply_markup=reply.main_kb
+        )
+
+
+
+@router.message(ChangeForm.bio)
+async def form_photo(message: Message, state: FSMContext):
+    await state.update_data(bio=message.text)
+    data = await state.get_data()
+    print(data)
+    await state.clear()
+    print(data['bio'])
+
+    with sqlite3.connect("data/database.db") as db:
+        cursor = db.cursor()
+
+        cursor.execute("""
+            UPDATE users SET about = ?
+            WHERE id = ?
+        """,(data["bio"], message.from_user.id),)
+
+        cursor.execute("SELECT * FROM users WHERE id = ?", (message.from_user.id,))
+        profile = cursor.fetchone()
+        
+
+    if profile:
+        await message.answer("Так выглядит твоя анкета:")
+        await message.answer_photo(
+            photo=profile[6], 
+            caption=f"{profile[1]}, {profile[2]}, {profile[4]} - {profile[5]}", 
+            reply_markup=reply.main_kb
+        )
+    

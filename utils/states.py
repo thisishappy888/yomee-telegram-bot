@@ -12,3 +12,8 @@ class Form(StatesGroup):
 class UserStates(StatesGroup):
     waiting_for_anonymous_message = State()  # Состояние ожидания сообщения
     waiting_for_message = State()
+
+
+class ChangeForm(StatesGroup):
+    photo = State()
+    bio = State()

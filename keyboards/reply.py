@@ -6,20 +6,11 @@ main_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text="Смотреть анкеты"),
-            KeyboardButton(text="Моя анкета")
-        ]
-    ],
-    resize_keyboard=True
-)
-
-
-# Редактирование анкеты
-change_form_kb = ReplyKeyboardMarkup(
-    keyboard=[
+            KeyboardButton(text="Заполнить анкету заново")
+        ],
         [
-            KeyboardButton(text="⚙️"),
-            KeyboardButton(text="😎"),
-            KeyboardButton(text="📷"),
+            KeyboardButton(text="Изменить фото/видео"),
+            KeyboardButton(text="Изменить текст анкеты"),
         ]
     ],
     resize_keyboard=True

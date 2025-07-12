@@ -136,6 +136,7 @@ async def user_message(message: Message, state: FSMContext, bot: Bot):
 
             from_user_data = get_user_from_db(from_user_id)
 
+            await message.answer("Вы понравились:")
             await send_user_profile(bot, to_user_id, from_user_data)
             await bot.send_message(to_user_id, f"сообщение:\n{message.text}")
 

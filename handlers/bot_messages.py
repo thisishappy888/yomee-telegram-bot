@@ -5,8 +5,9 @@ from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
-from keyboards import inline, reply
+from keyboards import inline
 from utils.model import get_best_match
+from utils.states import Form, ChangeForm
 
 
 router = Router()
@@ -62,11 +63,19 @@ async def look_question(message: Message, state: FSMContext):
 
 
 
-@router.message(F.text.lower() == "моя анкета")
-async def my_profile(message: Message):
-    await message.answer(
-        "⚙️ - Изменить анкету\n"
-        "😎 - Изменить описание\n"
-        "📷 - Изменить фото / видео", 
-        reply_markup=reply.change_form_kb
-    )
+@router.message(F.text.lower() == "заполнить анкету заново")
+async def change_profile(message: Message, state: FSMContext):
+    await state.set_state(Form.name)
+    await message.answer("Введите имя")
+
+
+@router.message(F.text.lower() == "изменить фото/видео")
+async def change_profile(message: Message, state: FSMContext):
+    await state.set_state(ChangeForm.photo)
+    await message.answer("Отправьте фото")
+
+
+@router.message(F.text.lower() == "изменить текст анкеты")
+async def change_profile(message: Message, state: FSMContext):
+    await state.set_state(ChangeForm.bio)
+    await message.answer("Расскажи о себе")
