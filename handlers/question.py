@@ -2,16 +2,41 @@ import logging
 import sqlite3
 import aiohttp
 
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 from utils.states import Form, ChangeForm
 from keyboards import reply
 
+from nudenet import NudeDetector
+import requests
+from PIL import Image
+from io import BytesIO
+import os
+
 
 router = Router()
 logger = logging.getLogger(__name__)
+
+detector = NudeDetector()  # скачает модель при первом запуске
+
+
+
+def is_nsfw_image(file_path, min_score=0.6):
+    img = Image.open(file_path)
+
+    detections = detector.detect(file_path)
+    print(f"Detections: {detections}")
+
+    img.close()  # закрываем файл
+
+    os.remove(file_path)
+
+    for item in detections:
+        if item["score"] >= min_score:
+            return True
+    return False
 
 
 
@@ -95,7 +120,7 @@ async def form_about(message: Message, state: FSMContext):
 
 
 @router.message(Form.photo)
-async def form_photo(message: Message, state: FSMContext):
+async def form_photo(message: Message, state: FSMContext, bot: Bot):
     """Финал: сохраняем акнету и показываем пользователю"""
     try:
         photo_file_id = message.photo[-1].file_id
@@ -106,6 +131,21 @@ async def form_photo(message: Message, state: FSMContext):
     data = await state.get_data()
     await state.clear()
 
+
+    photo_file_id = message.photo[-1].file_id
+    file = await bot.get_file(photo_file_id)
+    img_path = "temp.jpg" 
+    await bot.download_file(file.file_path, img_path)
+
+    result = is_nsfw_image(img_path)
+
+    if result:
+            await message.answer("Изображение содержит NSFW контент! Пожалуйста, отправьте другое фото.")
+            logger.info("Изображение содержит NSFW контент!")
+            os.remove(img_path)
+            return
+    else:
+        logger.info("Изображение безопасно.")
 
     try:
         with sqlite3.connect("data/database.db") as db:
