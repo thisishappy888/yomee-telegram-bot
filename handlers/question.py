@@ -132,7 +132,6 @@ async def form_photo(message: Message, state: FSMContext, bot: Bot):
     await state.clear()
 
 
-    photo_file_id = message.photo[-1].file_id
     file = await bot.get_file(photo_file_id)
     img_path = "temp.jpg" 
     await bot.download_file(file.file_path, img_path)
@@ -182,7 +181,7 @@ async def form_photo(message: Message, state: FSMContext, bot: Bot):
 
 
 @router.message(ChangeForm.photo, F.photo)
-async def change_form_photo(message: Message, state: FSMContext):
+async def change_form_photo(message: Message, state: FSMContext, bot: Bot):
     try:
         photo_file_id = message.photo[-1].file_id
     except (IndexError, AttributeError):
@@ -191,6 +190,20 @@ async def change_form_photo(message: Message, state: FSMContext):
 
     data = await state.get_data()
     await state.clear()
+
+    file = await bot.get_file(photo_file_id)
+    img_path = "temp.jpg" 
+    await bot.download_file(file.file_path, img_path)
+
+    result = is_nsfw_image(img_path)
+
+    if result:
+            await message.answer("Изображение содержит NSFW контент! Пожалуйста, отправьте другое фото.")
+            logger.info("Изображение содержит NSFW контент!")
+            os.remove(img_path)
+            return
+    else:
+        logger.info("Изображение безопасно.")
 
     with sqlite3.connect("data/database.db") as db:
         cursor = db.cursor()
